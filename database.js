@@ -1,11 +1,15 @@
 
 const http = require('http');
 const parser = require('./parser');
+const Storage = require('./simple-storage');
 
 exports.getSong = getSong;
 exports.getEvent = getEvent;
 
+const _storage = new Storage();
+
 BOM_HOST = 'bandoff.info';
+CACHE_SEC = 300; // 5 minutes
 
 function _get(path, cb) {
   const options = {
@@ -44,18 +48,38 @@ function _get(path, cb) {
 
 function getSong(eventID, songID, cb) {
   const path = '/' + eventID + '/song/' + songID;
+  let result = _storage.get(path);
+
+  // check if cache hits
+  if (result) {
+    cb({data: result});
+    return;
+  }
+
+  // retrieve
   _get(path, res => {
     if (res.error) { return cb(res); }
     result = parser.parse_song(res.data);
     cb({data: result});
+    _storage.set(path, result, CACHE_SEC);
   });
 }
 
 function getEvent(eventID, cb) {
   const path = '/' + eventID;
+  let result = _storage.get(path);
+
+  // check if cache hits
+  if (result) {
+    cb({data: result});
+    return;
+  }
+
+  // retrieve
   _get(path, res => {
     if (res.error) { return cb(res); }
     result = parser.parse_event(res.data);
     cb({data: result});
+    _storage.set(path, result, CACHE_SEC);
   });
 }
