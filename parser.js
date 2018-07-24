@@ -12,8 +12,13 @@ function parse_event(html) {
   const completeList = dom.window.document.querySelector("table.completeTable");
   const waitingList = dom.window.document.querySelector("table.waitingTable");
 
-  return _parseTable(completeList);
-  //return rs;
+  const complete = _parseTable(completeList);
+  const waiting = _parseTable(waitingList);
+
+  return {
+    approved: complete,
+    queuing: waiting
+  };
 }
 
 function parse_song(html) {
@@ -46,7 +51,17 @@ function _parseTable(elem) {
   const rows = tbody.querySelectorAll('tr');
   result.songs = []
   rows.forEach(row => {
-    result.songs.push(_parseTableRow(row, "td"));
+    const song = _parseTableRow(row, "td");
+    const parts = [];
+    for (let i = 0; i < result.parts.length; i++) {
+      parts.push({
+        part: result.parts[i].text,
+        player: song.parts[i].text,
+        status: song.parts[i].status,
+      });
+    }
+    song.parts = parts;
+    result.songs.push(song);
   });
 
   return result;
@@ -74,9 +89,17 @@ function _parseTableRow(elem, target) {
   result.status = it.next().value.textContent.trim();
   result.parts = [];
 
-  var rs = it.next()
+  var rs = it.next();
   while (!rs.done) {
-    result.parts.push(rs.value.textContent.trim());
+    let el = rs.value.querySelector('div');
+    if (!el) {
+      el = rs.value;
+    }
+    let part = {
+      text: el.textContent.trim(),
+      status: (rs.value.getAttribute('class') || "").trim(),
+    };
+    result.parts.push(part);
     rs = it.next();
   }
     

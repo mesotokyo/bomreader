@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <title>某まとめサイトリーダー</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="bomreader.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+  </head>
+  <body>
+    <h1>某まとめサイトリーダー</h1>
+
+    <div id="main-frame">
+      <h2>成立待ち</h2>
+      <div class="song-list">
+        <div class="song-list-header">
+          <span>曲</span>
+          <span>状況</span>
+          <span v-for="part in queuing.parts" v-text="part.text"></span>
+        </div><!-- .song-list-header -->
+
+        <div class="songs">
+          <div class="song" v-for="song in queuing.songs">
+            <span class="song-information">
+              <span class="song-name" v-text="song.song"></span>
+              <span class="song-artist" v-text="'［' + song.artist + '］'"></span>
+            </span>
+            <span class="song-status" v-text="song.status"></span>
+            <span v-for="part in song.parts"
+                  :class="'song-player ' + part.status">
+              <span v-if="part.status == 'no-entry' && part.player[0] == '('"
+                    class="no-entry">◯</span>
+              <span v-else-if="part.status == 'no-entry'"
+                    class="no-entry">◎</span>
+              <span v-else-if="part.status == 'blank'"
+                    class="blank">-</span>
+              <span v-else-if="part.player.length <= 5"
+                    v-text="part.player"
+                    :class="part.status"
+                    :title="part.player"></span>
+              <span v-else
+                    v-text="part.player.substr(0, 4) + '…'"
+                    :class="part.status"
+                    :title="part.player"></span>
+            </span>
+          </div>
+        </div><!-- .songs -->
+
+        <div class="song-list-footer">
+          <span>曲</span>
+          <span>状況</span>
+          <span v-for="part in queuing.parts" v-text="part.text"></span>
+        </div><!-- .song-list-header -->
+
+      </div>
+    </div>
+
+    <script src="bomreader.js"></script>
+  </body>
+</html>
