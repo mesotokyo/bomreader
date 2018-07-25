@@ -7,8 +7,6 @@ const path = require('path');
 const database = require('./database');
 const INDEX_HTML = 'index.html';
 
-const CACHE_DURATION = 300;
-
 const server = http.createServer((req, res) => {
   // add log handler
   res.on('close', () => {
@@ -31,14 +29,14 @@ const server = http.createServer((req, res) => {
 
   if (path.search('event/') == 0) {
     const eventID = /^event\/(.+)$/.exec(path);
-    database.getEvent(path, result => {
+    database.getEvent(eventID[1], result => {
       if (result.error) { return send404(req, res); }
       return sendJSON(result.data, req, res);
     });
     return;
   }
   if (path.search('song/' == 0)) {
-    const songID = /(.*)\/song\/(\d+)$/.exec(path);
+    const songID = /song\/(.*)\/(\d+)$/.exec(path);
     if (!songID) { return send404(req, res); }
     database.getSong(songID[1], songID[2], result => {
       if (result.error) { return send404(req, res); }

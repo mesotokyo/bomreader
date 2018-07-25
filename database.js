@@ -8,8 +8,13 @@ exports.getEvent = getEvent;
 
 const _storage = new Storage();
 
-BOM_HOST = 'bandoff.info';
-CACHE_SEC = 300; // 5 minutes
+const BOM_HOST = 'bandoff.info';
+
+let CACHE_EXPIRE_SEC = Number(process.env.CACHE_EXPIRE);
+if (isNaN(CACHE_EXPIRE_SEC) || CACHE_EXPIRE_SEC <= 0) {
+  CACHE_EXPIRE_SEC = 300;
+}
+
 
 function _get(path, cb) {
   const options = {
@@ -61,7 +66,7 @@ function getSong(eventID, songID, cb) {
     if (res.error) { return cb(res); }
     result = parser.parse_song(res.data);
     cb({data: result});
-    _storage.set(path, result, CACHE_SEC);
+    _storage.set(path, result, CACHE_EXPIRE_SEC);
   });
 }
 
@@ -75,11 +80,12 @@ function getEvent(eventID, cb) {
     return;
   }
 
+  console.log("retrieve: " + path);
   // retrieve
   _get(path, res => {
     if (res.error) { return cb(res); }
     result = parser.parse_event(res.data);
     cb({data: result});
-    _storage.set(path, result, CACHE_SEC);
+    _storage.set(path, result, CACHE_EXPIRE_SEC);
   });
 }

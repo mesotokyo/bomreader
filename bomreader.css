@@ -2,11 +2,10 @@
 .song-artist { color: gray; font-size: 80%; }
 .song-list { display: table; width: 100%;}
 .song-status { font-size: 80%; }
-.song-list-header { display: table-header-group; }
-.song-list-footer { display: table-footer-group; }
-.song-list-header span, 
-.song-list-footer span {
-    display: table-cell;
+.song-list-header { }
+.song-list-footer { }
+.song-list-header th, 
+.song-list-footer th {
     padding: 4px;
     border-bottom: 1px solid gray;
     border-right: 1px solid lightgray;
@@ -16,14 +15,12 @@
 .song-list-header span {
     border-top: 1px solid gray;
 }
-.songs { display: table-row-group; }
-.song {
-    display: table-row;
-}
+.songs { }
+.song { }
+
 .song-information,
 .song-status,
 .song-player {
-    display: table-cell;
     padding: 4px;
     border-bottom: 1px solid gray;
     border-right: 1px solid lightgray;
@@ -41,4 +38,8 @@
 }
 .song-information {
     width: 18em;
+}
+
+.song-properties {
+    padding: 4px;
 }

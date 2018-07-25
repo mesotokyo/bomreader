@@ -24,7 +24,11 @@ function parse_event(html) {
 function parse_song(html) {
   const dom = new JSDOM(html);
   const song_table = dom.window.document.querySelector("div.bomusic-info");
-  const result = [];
+  const result = {
+    url: "",
+    songName: "",
+    attributes: [],
+  };
 
   const items = song_table.querySelectorAll('div.form-group');
   items.forEach(row => {
@@ -32,11 +36,24 @@ function parse_song(html) {
     if (label) {
       const attribute = label.getAttribute('for');
       const value = row.querySelector('div');
-      result.push({
-        attibute: attribute,
-        name: label.textContent.trim(),
-        value: value.textContent.trim()
-      });
+      if (attribute == "songName") {
+        result.songName = value.textContent.trim();
+      } else if (attribute == "url") {
+        const url = value.textContent.trim();
+        result.url = url;
+
+        // check if url indicate youtube movie
+        let m = /^https?:\/\/www\.youtube\.com\/watch\?v=(.*)$/.exec(url);
+        if (m) {
+          result.youtubeID = m[1];
+        }
+      } else {
+        result.attributes.push({
+          attribute: attribute,
+          name: label.textContent.trim(),
+          value: value.textContent.trim()
+        });
+      }
     }
   });
 
