@@ -20,6 +20,8 @@
           <template class="song" v-for="song in queue.songs">
             <tr>
               <td class="song-information" @click="toggleSongProperties(song);">
+                <span v-if="song.showProperties" class="triangle-open"></span>
+                <span v-else class="triangle-close"></span>
                 <span class="song-name" v-text="song.song"></span>
                 <span class="song-artist"
                       v-text="'［' + song.artist + '］'"></span>
@@ -47,11 +49,18 @@
               <td v-if="song.showProperties && song.properties"
                   class="song-properties"
                   :colspan="song.parts.length + 2">
-                <div v-if="song.properties.youtubeID">
+                <div v-if="song.properties.youtubeID" class="song-movie">
                   <iframe width="560" height="315"
                           :src="'https://www.youtube.com/embed/' + song.properties.youtubeID"
                           frameborder="0" allow="autoplay; encrypted-media"
                           allowfullscreen></iframe>
+                </div>
+                <div class="song-attributes">
+                  <div class="song-attribute"
+                       v-for="attr in song.properties.attributes">
+                    <span v-text="attr.name + '：'" class="attribute-name"></span>
+                    <span v-text="attr.value"></span>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -69,14 +78,29 @@
 
   </head>
   <body>
-    <h1>某まとめサイトリーダー</h1>
-
     <div id="main-frame">
-      <h2>成立</h2>
-      <song-list :queue="approved" :event-id="eventID"></song-list>
 
-      <h2>成立待ち</h2>
-      <song-list :queue="queuing" :event-id="eventID"></song-list>
+      <div class="event-selector jumbotron">
+        <h1>某まとめサイトリーダー</h1>
+        <form class="form-inline" @submit.prevent="loadEvent()">
+          <label>イベントページURL/イベントID：
+            <input type="text" class="form-control" v-model="eventId">
+          </label>
+          <button type="submit"
+                  class="btn btn-primary">SHOW!</button>
+        </form>
+      </div>
+
+      <div class="song-list-wrap">
+        <h2>成立</h2>
+        <song-list :queue="approved" :event-id="eventId"></song-list>
+      </div>
+
+      <div class="song-list-wrap">
+        <h2>成立待ち</h2>
+        <song-list :queue="queuing" :event-id="eventId"></song-list>
+      </div>
+                
     </div><!-- #main-frame -->
 
     <script src="bomreader.js"></script>

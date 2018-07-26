@@ -23,6 +23,10 @@ const server = http.createServer((req, res) => {
     return sendPage(INDEX_HTML, req, res);
   }
 
+  if (path.search('.') == -1) {
+    return sendPage(INDEX_HTML, req, res);
+  }
+
   if (path.search('/') == -1) {
     return sendPage(path, req, res);
   }

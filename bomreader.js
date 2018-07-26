@@ -1,7 +1,7 @@
 // bomreader.js
 
 // <song-list> component
-const methods = {
+const songListMethods = {
   toggleSongProperties: function toggleSongProperties(song) {
     if (!song.songID) { return; }
     song.showProperties = !song.showProperties;
@@ -23,12 +23,30 @@ Vue.component('song-list', {
   data: function () { return {} },
   props: { queue: Object, eventId: String },
   template: '#song-list-template',
-  methods: methods,
+  methods: songListMethods,
 });
 
 
 // view-model
-function beforeCreate() {
+
+// data
+const data = {
+  approved: {},
+  queuing: {},
+  eventId: "",
+};
+
+// method
+const methods = {
+  loadEvent: loadEvent,
+}
+
+function loadEvent() {
+  // parse URL
+  const m = /^https?:\/\/bandoff.info\/(.*)\/?$/.exec(this.eventId);
+  if (m) {
+    this.eventId = m[1];
+  }
   const xhr = new XMLHttpRequest();
   xhr.addEventListener('load', () => {
     if (xhr.status == 200) {
@@ -37,22 +55,14 @@ function beforeCreate() {
     }
   });
   xhr.responseType = 'json';
-  xhr.open('GET', '/event/' + 'gmp9');
+  xhr.open('GET', '/event/' + this.eventId);
   xhr.send();
 }
-
-
-// data
-const data = {
-  approved: {},
-  queuing: {},
-  eventID: "gmp9",
-};
 
 // create view-model
 const app = new Vue({
   el: '#main-frame',
   data: data,
-  beforeCreate: beforeCreate,
+  methods: methods,
 });
 
