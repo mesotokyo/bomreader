@@ -7,73 +7,78 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 
     <script type="text/x-template" id="song-list-template">
-      <table class="song-list">
-        <thead class="song-list-header">
-          <tr>
+      <div class="song-list-wrap">
+        <div>
+          ◎：募集中（必須パート） ◯：募集中（任意） 青文字：エントリー可/譲渡可
+        </div>
+        <table class="song-list">
+          <thead class="song-list-header">
+            <tr>
+              <th>曲</th>
+              <th>状況</th>
+              <th v-for="part in queue.parts" v-text="part.text"></th>
+            </tr>
+          </thead>
+
+          <tbody class="songs">
+            <template class="song" v-for="song in queue.songs">
+              <tr>
+                <td class="song-information" @click="toggleSongProperties(song);">
+                  <span v-if="song.showProperties" class="triangle-open"></span>
+                  <span v-else class="triangle-close"></span>
+                  <span class="song-name" v-text="song.song"></span>
+                  <span class="song-artist"
+                        v-text="'［' + song.artist + '］'"></span>
+                </td>
+                <td class="song-status" v-text="song.status"></td>
+                <td v-for="part in song.parts"
+                    :class="'song-player ' + part.status">
+                  <span v-if="part.status == 'no-entry' && part.player[0] == '('"
+                        class="no-entry">◯</span>
+                  <span v-else-if="part.status == 'no-entry'"
+                        class="no-entry">◎</span>
+                  <span v-else-if="part.status == 'blank'"
+                        class="blank">-</span>
+                  <span v-else-if="part.player.length <= 5"
+                        v-text="part.player"
+                        :class="part.status"
+                        :title="part.player"></span>
+                  <span v-else
+                        v-text="part.player.substr(0, 4) + '…'"
+                        :class="part.status"
+                        :title="part.player"></span>
+                </td>
+              </tr>
+              <tr>
+                <td v-if="song.showProperties && song.properties"
+                    class="song-properties"
+                    :colspan="song.parts.length + 2">
+                  <div v-if="song.properties.youtubeID" class="song-movie">
+                    <iframe width="560" height="315"
+                            :src="'https://www.youtube.com/embed/' + song.properties.youtubeID"
+                            frameborder="0" allow="autoplay; encrypted-media"
+                            allowfullscreen></iframe>
+                  </div>
+                  <div class="song-attributes">
+                    <div class="song-attribute"
+                         v-for="attr in song.properties.attributes">
+                      <span v-text="attr.name + '：'" class="attribute-name"></span>
+                      <span v-text="attr.value"></span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody><!-- .songs -->
+
+          <tfoot class="song-list-footer">
             <th>曲</th>
             <th>状況</th>
             <th v-for="part in queue.parts" v-text="part.text"></th>
-          </tr>
-        </thead>
+          </tfoot><!-- .song-list-header -->
 
-        <tbody class="songs">
-          <template class="song" v-for="song in queue.songs">
-            <tr>
-              <td class="song-information" @click="toggleSongProperties(song);">
-                <span v-if="song.showProperties" class="triangle-open"></span>
-                <span v-else class="triangle-close"></span>
-                <span class="song-name" v-text="song.song"></span>
-                <span class="song-artist"
-                      v-text="'［' + song.artist + '］'"></span>
-              </td>
-              <td class="song-status" v-text="song.status"></td>
-              <td v-for="part in song.parts"
-                  :class="'song-player ' + part.status">
-                <span v-if="part.status == 'no-entry' && part.player[0] == '('"
-                      class="no-entry">◯</span>
-                <span v-else-if="part.status == 'no-entry'"
-                      class="no-entry">◎</span>
-                <span v-else-if="part.status == 'blank'"
-                      class="blank">-</span>
-                <span v-else-if="part.player.length <= 5"
-                      v-text="part.player"
-                      :class="part.status"
-                      :title="part.player"></span>
-                <span v-else
-                      v-text="part.player.substr(0, 4) + '…'"
-                      :class="part.status"
-                      :title="part.player"></span>
-              </td>
-            </tr>
-            <tr>
-              <td v-if="song.showProperties && song.properties"
-                  class="song-properties"
-                  :colspan="song.parts.length + 2">
-                <div v-if="song.properties.youtubeID" class="song-movie">
-                  <iframe width="560" height="315"
-                          :src="'https://www.youtube.com/embed/' + song.properties.youtubeID"
-                          frameborder="0" allow="autoplay; encrypted-media"
-                          allowfullscreen></iframe>
-                </div>
-                <div class="song-attributes">
-                  <div class="song-attribute"
-                       v-for="attr in song.properties.attributes">
-                    <span v-text="attr.name + '：'" class="attribute-name"></span>
-                    <span v-text="attr.value"></span>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody><!-- .songs -->
-
-        <tfoot class="song-list-footer">
-          <th>曲</th>
-          <th>状況</th>
-          <th v-for="part in queue.parts" v-text="part.text"></th>
-        </tfoot><!-- .song-list-header -->
-
-      </table>
+        </table>
+      </div>
     </script>
 
   </head>
@@ -89,14 +94,24 @@
           <button type="submit"
                   class="btn btn-primary">SHOW!</button>
         </form>
+
+        <div class="alert alert-warning" v-if="status == 'not_found'">
+          エラー：該当するイベントが見つかりません
+        </div>
+        <div class="alert alert-info" v-else-if="status == 'loading'">
+          NOW LOADING...
+        </div>
+        <div class="alert alert-warning" v-else-if="status == 'error'">
+          エラー：イベント情報の読み込みに失敗しました
+        </div>
       </div>
 
-      <div class="song-list-wrap">
+      <div class="song-list-wrap" v-if="status == 'loaded'">
         <h2>成立</h2>
         <song-list :queue="approved" :event-id="eventId"></song-list>
       </div>
 
-      <div class="song-list-wrap">
+      <div class="song-list-wrap" v-if="status == 'loaded'">
         <h2>成立待ち</h2>
         <song-list :queue="queuing" :event-id="eventId"></song-list>
       </div>

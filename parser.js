@@ -47,6 +47,13 @@ function parse_song(html) {
         if (m) {
           result.youtubeID = m[1];
         }
+
+        // youtu.be support
+        m = /^https?:\/\/youtu\.be\/(.*)$/.exec(url);
+        if (m) {
+          result.youtubeID = m[1];
+        }
+
       } else {
         result.attributes.push({
           attribute: attribute,

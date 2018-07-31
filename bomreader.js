@@ -34,6 +34,7 @@ const data = {
   approved: {},
   queuing: {},
   eventId: "",
+  status: false,
 };
 
 // method
@@ -43,6 +44,10 @@ const methods = {
 
 function loadEvent() {
   // parse URL
+  if (this.eventId.length == 0) {
+    return;
+  }
+
   const m = /^https?:\/\/bandoff.info\/(.*)\/?$/.exec(this.eventId);
   if (m) {
     this.eventId = m[1];
@@ -52,11 +57,30 @@ function loadEvent() {
     if (xhr.status == 200) {
       this.approved = xhr.response.approved;
       this.queuing = xhr.response.queuing;
+      this.status = "loaded";
+    } else if (xhr.status == 404) {
+      this.status = "not_found";
+    } else {
+      this.status = "error";
     }
   });
   xhr.responseType = 'json';
   xhr.open('GET', '/event/' + this.eventId);
   xhr.send();
+
+  // update URL bar
+  history.replaceState('', '', this.eventId);
+  this.status = "loading";
+}
+
+function created() {
+  // get event id from url
+  const pathname = location.pathname.substring(1).trim();
+  console.log(pathname);
+  if (pathname.length > 0 && pathname.search('/') == -1) {
+    this.eventId = pathname;
+    this.loadEvent();
+  }
 }
 
 // create view-model
@@ -64,5 +88,6 @@ const app = new Vue({
   el: '#main-frame',
   data: data,
   methods: methods,
+  created: created,
 });
 

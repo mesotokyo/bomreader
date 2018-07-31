@@ -23,15 +23,17 @@ const server = http.createServer((req, res) => {
     return sendPage(INDEX_HTML, req, res);
   }
 
-  if (path.search('.') == -1) {
-    return sendPage(INDEX_HTML, req, res);
-  }
-
-  if (path.search('/') == -1) {
+  console.log(path);
+  if (path.search(/\./) != -1) {
     return sendPage(path, req, res);
   }
 
-  if (path.search('event/') == 0) {
+  console.log(path);
+  if (path.search(/\//) == -1) {
+    return sendPage(INDEX_HTML, req, res);
+  }
+
+  if (path.search(/event\//) == 0) {
     const eventID = /^event\/(.+)$/.exec(path);
     database.getEvent(eventID[1], result => {
       if (result.error) { return send404(req, res); }
@@ -39,7 +41,7 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-  if (path.search('song/' == 0)) {
+  if (path.search(/song\// == 0)) {
     const songID = /song\/(.*)\/(\d+)$/.exec(path);
     if (!songID) { return send404(req, res); }
     database.getSong(songID[1], songID[2], result => {
@@ -72,7 +74,7 @@ function sendPage(filepath, req, res) {
 
     const ext = path.extname(filepath);
     let contentType = 'text/html; charset=UTF-8';
-    if (ext == '.html') {
+    if (ext == '.html' || ext == '.htm') {
       contentType = 'text/html; charset=UTF-8';
     } else if (ext == '.js') {
       contentType = 'text/javascript';
