@@ -4,7 +4,12 @@
 const songListMethods = {
   toggleSongProperties: function toggleSongProperties(song) {
     if (!song.songID) { return; }
-    song.showProperties = !song.showProperties;
+    if (song.showProperties === undefined) {
+      this.$set(song, "showProperties", true);
+    } else {
+      song.showProperties = !song.showProperties;
+    }
+
     if (!song.properties) {
       const xhr = new XMLHttpRequest();
       xhr.addEventListener('load', () => {

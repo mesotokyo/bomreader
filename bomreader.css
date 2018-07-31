@@ -3,8 +3,7 @@
 .song-artist { color: gray; font-size: 80%; }
 .song-list { display: table; width: 100%;}
 .song-status { font-size: 80%; }
-.song-list-header { }
-.song-list-footer { }
+
 .song-list-header th, 
 .song-list-footer th {
     padding: 4px;
@@ -13,11 +12,7 @@
     text-align: center;
     background: lightgray;
 }
-.song-list-header span {
-    border-top: 1px solid gray;
-}
-.songs { }
-.song { }
+.song-list-header span { border-top: 1px solid gray; }
 
 .song-information,
 .song-status,
@@ -34,12 +29,8 @@
 
 .song-player { text-align: center; }
 
-.song-player .blank {
-    color: lightgray;
-}
-.song-information {
-    width: 18em;
-}
+.song-player .blank { color: lightgray; }
+.song-information { width: 18em; }
 
 .song-properties {
     padding: 4px;
@@ -55,13 +46,8 @@
     line-height: 180%;
 }
 
-.song-name {
-    cursor: pointer;
-}
-
-.song-attribute .attribute-name {
-    font-weight: bold;
-}
+.song-name { cursor: pointer; }
+.song-attribute .attribute-name { font-weight: bold; }
 
 .triangle-open {
     display: inline-block;
@@ -74,6 +60,7 @@
     border-right: .3em solid transparent;
     border-bottom: 0;
     border-left: .3em solid transparent;
+    cursor: pointer;
 }
 
 .triangle-close {
@@ -87,4 +74,5 @@
     border-top: .3em solid transparent;
     border-right: 0;
     border-bottom: .3em solid transparent;
+    cursor: pointer;
 }
