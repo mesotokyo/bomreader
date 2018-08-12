@@ -65,7 +65,8 @@ function send404(req, res) {
 }
 
 function sendPage(filepath, req, res) {
-  fs.readFile(filepath, { encoding: 'utf8' }, (err, data) => {
+  const absPath = path.join(__dirname, filepath);
+  fs.readFile(absPath, { encoding: 'utf8' }, (err, data) => {
     if (err) {
       res.writeHead(404);
       res.end("Not Found");
@@ -90,6 +91,6 @@ function sendPage(filepath, req, res) {
   });
 }
 
-server.listen(1080, 'localhost', () => {
-  console.log("start server: localhost:1080");
+server.listen(1080, '0.0.0.0', () => {
+  console.log("start server: 0.0.0.0:1080");
 });
