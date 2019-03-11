@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const parser = require('./parser');
+const parser = require('../parser');
 
 const EVENT_HTML = 'test.html';
 const SONG_HTML = 'song_sample.html';
