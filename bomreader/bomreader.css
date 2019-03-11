@@ -1,3 +1,5 @@
+header .notice { margin-top: 1em; }
+
 .song-list-wrap { margin-bottom: 2em; }
 
 .song-artist { color: gray; font-size: 80%; }
@@ -75,4 +77,8 @@
     border-right: 0;
     border-bottom: .3em solid transparent;
     cursor: pointer;
+}
+
+footer {
+    text-align: center;
 }

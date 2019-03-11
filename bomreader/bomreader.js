@@ -9,12 +9,16 @@ const songListMethods = {
     } else {
       song.showProperties = !song.showProperties;
     }
+    if (song.loading === undefined) {
+      this.$set(song, "loading", true);
+    }
 
     if (!song.properties) {
       const xhr = new XMLHttpRequest();
       xhr.addEventListener('load', () => {
         if (xhr.status == 200) {
           this.$set(song, "properties", xhr.response);
+          song.loading = false;
         }
       });
       xhr.responseType = 'json';
@@ -81,7 +85,6 @@ function loadEvent() {
 function created() {
   // get event id from url
   const pathname = location.pathname.substring(1).trim();
-  console.log(pathname);
   if (pathname.length > 0 && pathname.search('/') == -1) {
     this.eventId = pathname;
     this.loadEvent();
