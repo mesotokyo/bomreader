@@ -8,3 +8,10 @@ clean:
 
 run:
 	docker run -d --name bomreader -p 1080:1080 --restart=always bomreader
+
+restart:
+	docker stop bomreader
+	docker rm bomreader
+	docker run -d --name bomreader -p 1080:1080 --restart=always bomreader
+
+
