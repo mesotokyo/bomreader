@@ -10,13 +10,33 @@
       <div class="song-list-wrap">
         <div>
           ◎：募集中（必須パート） ◯：募集中（任意） 青文字：エントリー可/譲渡可
+          （見出しクリックでソート順変更可）
         </div>
         <table class="song-list">
           <thead class="song-list-header">
             <tr>
-              <th>曲</th>
-              <th>状況</th>
-              <th v-for="part in queue.parts" v-text="part.text"></th>
+              <th @click="changeSortOrder(0)">
+                <span>曲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 0 && sortOrder == 'asc'">▲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 0 && sortOrder == 'desc'">▼</span>
+              </th>
+              <th @click="changeSortOrder(1)">
+                <span>状況</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 1 && sortOrder == 'asc'">▲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 1 && sortOrder == 'desc'">▼</span>
+              </th>
+              <th v-for="(part, index) in queue.parts"
+                  @click="changeSortOrder(index + 2)">
+                <span v-text="part.text"></span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == index + 2 && sortOrder == 'asc'">▲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == index + 2 && sortOrder == 'desc'">▼</span>
+              </th>
             </tr>
           </thead>
 
@@ -76,9 +96,30 @@
           </tbody><!-- .songs -->
 
           <tfoot class="song-list-footer">
-            <th>曲</th>
-            <th>状況</th>
-            <th v-for="part in queue.parts" v-text="part.text"></th>
+            <tr>
+              <th @click="changeSortOrder(0)">
+                <span>曲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 0 && sortOrder == 'asc'">▲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 0 && sortOrder == 'desc'">▼</span>
+              </th>
+              <th @click="changeSortOrder(1)">
+                <span>状況</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 1 && sortOrder == 'asc'">▲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == 1 && sortOrder == 'desc'">▼</span>
+              </th>
+              <th v-for="(part, index) in queue.parts"
+                  @click="changeSortOrder(index + 2)">
+                <span v-text="part.text"></span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == index + 2 && sortOrder == 'asc'">▲</span>
+                <span class="sort-order"
+                      v-if="sortKeyIndex == index + 2 && sortOrder == 'desc'">▼</span>
+              </th>
+            </tr>
           </tfoot><!-- .song-list-header -->
 
         </table>
@@ -91,7 +132,7 @@
 
       <header class="event-selector jumbotron">
         <h1>某まとめサイトリーダー</h1>
-        <form class="form-inline" @submit.prevent="loadEvent()">
+        <form class="form-inline url-form" @submit.prevent="loadEvent()">
           <label>イベントページURL/イベントID：
             <input type="text" class="form-control" v-model="eventId">
           </label>

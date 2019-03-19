@@ -1,3 +1,4 @@
+header .url-form {margin-bottom: 1em; }
 header .notice { margin-top: 1em; }
 
 .song-list-wrap { margin-bottom: 2em; }
@@ -13,8 +14,9 @@ header .notice { margin-top: 1em; }
     border-right: 1px solid lightgray;
     text-align: center;
     background: lightgray;
+    cursor: pointer;
 }
-.song-list-header span { border-top: 1px solid gray; }
+.song-list-header .sort-order { font-size:80% }
 
 .song-information,
 .song-status,
