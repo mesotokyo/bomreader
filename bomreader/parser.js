@@ -39,7 +39,8 @@ function parse_song(html) {
       if (attribute == "songName") {
         result.songName = value.textContent.trim();
       } else if (attribute == "url") {
-        const url = value.textContent.trim();
+        const rex = /^(https?\S+).*$/s;
+        const url = value.textContent.trim().replace(rex, '$1');
         result.url = url;
 
         // check if url indicate youtube movie
@@ -52,6 +53,12 @@ function parse_song(html) {
         m = /^https?:\/\/youtu\.be\/(.*)$/.exec(url);
         if (m) {
           result.youtubeID = m[1];
+        }
+
+	// nicovideo support
+        m = /^https?:\/\/www\.nicovideo\.jp\/watch\/(sm\d+)$/.exec(url);
+        if (m) {
+          result.nicovideoID = m[1];
         }
 
       } else {

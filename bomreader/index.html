@@ -83,6 +83,12 @@
                             frameborder="0" allow="autoplay; encrypted-media"
                             allowfullscreen></iframe>
                   </div>
+                  <div v-if="song.properties.nicovideoID" class="song-movie">
+                    <iframe allowfullscreen="allowfullscreen" allow="autoplay"
+                            frameborder="0" width="640" height="360"
+                            :src="'https://embed.nicovideo.jp/watch/' + song.properties.nicovideoID + '?oldScript=1from=0&amp;allowProgrammaticFullScreen=1'"
+                            style="max-width: 100%;"></iframe>
+                  </div>
                   <div class="song-attributes">
                     <div class="song-attribute"
                          v-for="attr in song.properties.attributes">
