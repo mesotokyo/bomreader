@@ -44,7 +44,7 @@ function parse_song(html) {
         result.url = url;
 
         // check if url indicate youtube movie
-        let m = /^https?:\/\/www\.youtube\.com\/watch\?v=([^&]*)/.exec(url);
+        let m = /^https?:\/\/(?:www|m)\.youtube\.com\/watch\?v=([^&]*)/.exec(url);
         if (m) {
           result.youtubeID = m[1];
         }
